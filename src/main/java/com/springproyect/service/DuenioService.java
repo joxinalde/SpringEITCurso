@@ -21,4 +21,8 @@ public class DuenioService {
 	public Duenio guardarDuenio(Duenio duenio){
 		return duenioRepository.save(duenio);
 	}
+	
+	public Duenio obtenerDuenioPorId(Long id) {
+		return duenioRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontro al duenio"));
+	}
 }

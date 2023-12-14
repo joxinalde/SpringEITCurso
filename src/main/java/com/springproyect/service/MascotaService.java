@@ -1,6 +1,7 @@
 package com.springproyect.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,37 @@ public class MascotaService {
 	}
 	
 	public void guardarMascota(Mascota mascota, Long idDuenio) {
-		Duenio duenio = duenioRepository.findById(idDuenio).orElseThrow(() -> new RuntimeException());
+		Duenio duenio = duenioRepository.findById(idDuenio).orElseThrow(() -> new RuntimeException("No se encontro al duenio"));
 		mascota.setDuenio(duenio);
 		mascotaRepository.save(mascota);
+	}
+	
+	public Mascota obtenerMascotaPorId(Long id) {
+		return mascotaRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontro la mascota"));
+	}
+	
+	public void eliminarMascota(Long id) {
+		Optional<Mascota> mascotaOptional = mascotaRepository.findById(id);
+		
+		if (!mascotaOptional.isPresent()) {
+			throw new RuntimeException("No se encontro la mascota");
+		} else {
+			Mascota mascotaExistente = mascotaOptional.get();
+			mascotaRepository.delete(mascotaExistente);
+		}
+	}
+	
+	public void actualizarMascota(Long id, Mascota mascotaActualizada) {
+		Optional<Mascota> mascotaOptional = mascotaRepository.findById(id);
+		
+		if (!mascotaOptional.isPresent()) {
+			throw new RuntimeException("No se encontro la mascota");
+		} else {
+			Mascota mascotaExistente = mascotaOptional.get();
+			mascotaExistente.setNombre(mascotaActualizada.getNombre());
+			mascotaExistente.setEdad(mascotaActualizada.getEdad());
+			mascotaExistente.setDuenio(mascotaActualizada.getDuenio());
+			mascotaRepository.save(mascotaExistente);
+		}
 	}
 }
